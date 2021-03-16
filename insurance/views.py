@@ -47,7 +47,7 @@ class RiskDetailsViewSet(viewsets.ModelViewSet):
 
 	queryset = RiskDetails.objects.all()
 
-	#get all risk details using foreign key risk name
+	
 	#return custom error message if not found
 	def list(self, request, *args, **kwargs):
 		serializer_context = {
@@ -55,6 +55,9 @@ class RiskDetailsViewSet(viewsets.ModelViewSet):
         }
 		if request.method == 'GET':
 			_risk_names = RiskDetails.objects.all()
+		if request.method == 'GET' and request.query_params:#for query vue form
+			name = self.request.query_params.get('risk_name','')
+			_risk_names = RiskDetails.objects.all().filter(risk_name__name=name)
 			if _risk_names:
 				serializer = RiskDetailsSerializer(_risk_names,context=serializer_context, many=True)
 				return Response(serializer.data)
