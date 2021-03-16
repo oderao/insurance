@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Insurace Policy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<body>
+  <div class="columns" id="app">
+    <div class="column is-two-thirds">
+      <section class="section">
+        <h1 class="title">Insurance Policy</h1>
+        <p class="subtitle">
+          <strong>View Insurance Policy</strong>
+        </p>
+        <hr>      
+        <!-- form starts here -->
+        <section class="form">
+          <div class="field">
+            <label class="label">Risk Name</label>
+              <div class="control">
+                <input v-model="form.risk_name" class="input" type="text" placeholder="Text input">
+              </div>
+              <label class="label">Risk Duration</label>
+              <div class="control">
+                <input v-model="form.risk_duration" class="input" type="text" placeholder="Text input">
+              </div>
+              <label class="label">Risk ID</label>
+              <div class="control">
+                <input v-model="form.risk_id" class="input" type="text" placeholder="Text input">
+              </div>
+              <label class="label">Risk Amount</label>
+              <div class="control">
+                <input v-model="form.risk_amount" class="input" type="number" placeholder="Text input">
+              </div>
+              <label class="label">Risk Active Date</label>
+              <div class="control">
+                <input v-model="form.risk_active_date" class="input" type="date" placeholder="Text input">
+              </div>
+          </div>
+        </section>
+      </section>
+    </div>
+  </div>
+  
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    form : {
+      risk_name: '',
+      risk_duration : '',
+      risk_id:'',
+      risk_amount:'0',
+      risk_active_date:'',
+    },
+  },
+  mounted () {
+    axios
+      .get("http://127.0.0.1:8080/riskdetail/?risk_name=Sport%20Insurance")
+      .then(response => (this.form = response.data[0]))
+      .catch(error => {
+        console.log(error)
+        this.errored = true
+      })
+      .finally(() => this.loading = false)
+  }
+})
+</script>
+
+</body>
+</html>
