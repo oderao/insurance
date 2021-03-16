@@ -22,14 +22,18 @@ class RiskNameViewSet(viewsets.ModelViewSet):
 		serializer = self.get_serializer(instance)
 		return Response(serializer.data)
 
-	#get single risk type from using query params
+	#get single risk type using query params
 	def list(self, request, *args, **kwargs):
+		serializer_context = {
+            'request': request,
+        }
+		context={'request': request}
 		if request.method == 'GET' and request.query_params:
-			name = self.request.query_params.get('name')
+			name = self.request.query_params.get('risk_type_name')
 			if name:
-				risk_names = RiskName.objects.all().filter(name=name)
+				risk_names = RiskDetails.objects.all().filter(risk_name__name=name)
 				if risk_names:
-					serializer = RiskNameSerializer(risk_names, many=True)
+					serializer = RiskDetailsSerializer(risk_names,context=serializer_context,many=True)
 					return Response(serializer.data)
 				if not risk_names:
 					return Response({'response':'risk_type not found'})
@@ -49,16 +53,13 @@ class RiskDetailsViewSet(viewsets.ModelViewSet):
 		serializer_context = {
             'request': request,
         }
-		if request.method == 'GET' and request.query_params:
-			name = self.request.query_params.get('risk_name')
-			if name:
-				_risk_names = RiskName.objects.get(name=name)
-				_risk_names = _risk_names.riskdetails_set.filter(risk_name__name=name)
-				if _risk_names:
-					serializer = RiskDetailsSerializer(_risk_names,context=serializer_context, many=True)
-					return Response(serializer.data)
-				if not _risk_names:
-					return Response({'response':'risk_details not found'})
+		if request.method == 'GET':
+			_risk_names = RiskDetails.objects.all()
+			if _risk_names:
+				serializer = RiskDetailsSerializer(_risk_names,context=serializer_context, many=True)
+				return Response(serializer.data)
+			if not _risk_names:
+				return Response({'response':'risk_details not found'})
 		return Response({'response':'enter risk_type in query params'})
 
 
