@@ -47,6 +47,8 @@
   
 
 <script>
+  var urlParams = new URLSearchParams(window.location.search);
+const param = urlParams.get('name') || '';
 new Vue({
   el: '#app',
   data: {
@@ -60,7 +62,7 @@ new Vue({
   },
   mounted () {
     axios
-      .get("http://127.0.0.1:8080/riskdetail/?risk_name=Sport%20Insurance")
+      .get("http://127.0.0.1:8080/riskdetail/?risk_name=" + param)
       .then(response => (this.form = response.data[0]))
       .catch(error => {
         console.log(error)
